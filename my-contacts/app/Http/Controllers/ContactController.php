@@ -13,9 +13,16 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $keyword = $request->get('keyword');
         $contacts = Contact::all();
+
+        if($keyword){
+        $contacts = Contact::where("nama", "LIKE", "%$keyword%")->get();
+            
+        }
+
         return view('contact.index', compact('contacts'));
     }
 
@@ -39,6 +46,12 @@ class ContactController extends Controller
     {
         // return var_dump($request->input());
         // Contact = nama database
+        $request->validate([
+            'nama' => 'required|max:30',
+            'email' => 'required|email:rfc,dns',
+            'phone' => 'required',
+            'address' => 'required'
+        ]);
         $contact = new Contact([
             'nama' => $request->input('nama'),
             'email' => $request->input('email'),
@@ -46,7 +59,7 @@ class ContactController extends Controller
             'address' => $request->input('address')
         ]);
         $contact->save();
-        return redirect('/');
+        return redirect('/')->with('success', 'Data Saved!');
 
     }
 
@@ -85,12 +98,18 @@ class ContactController extends Controller
     {
         // echo var_dump($request->input());
         $contact = Contact::find($id);
+        $request->validate([
+            'nama' => 'required|max:30',
+            'email' => 'required|email:rfc,dns',
+            'phone' => 'required',
+            'address' => 'required'
+        ]);
         $contact->nama = $request->input('nama');
         $contact->email = $request->input('email');
         $contact->phone = $request->input('phone');
         $contact->address = $request->input('address');
         $contact->save();
-        return redirect('/');
+        return redirect('/')->with('success', 'Data Edited!');
     }
 
     /**
@@ -103,6 +122,6 @@ class ContactController extends Controller
     {
         $contact = Contact::find($id);
         $contact->delete();
-        return redirect('/');
+        return redirect('/')->with('success', 'Data Deleted!');
     }
 }

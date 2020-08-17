@@ -1,40 +1,59 @@
 @extends('contact')
 
 @section('main')
-<a href="{{ url("contacts/create")}}" class="btn btn-success mb-1">Add New</a>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <!-- <th>id</th> -->
-                        <th>nama</th>
-                        <th>email</th>
-                        <th>phone</th>
-                        <th>address</th>
-                        <th colspan="2">action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($contacts as $contact)
-                    <tr>
-                        <!-- <td>{{$contact->id}}</td> -->
-                        <td>{{$contact->nama}}</td>
-                        <td>{{$contact->phone}}</td>
-                        <td>{{$contact->email}}</td>
-                        <td>{{$contact->address}}</td>
-                        <td><a class="btn btn-primary" href="{{ url("contacts/{$contact->id}/edit") }}">Edit</td>
-                        <td>
-                            <form action="{{ url("contacts/{$contact->id}") }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+<a href="{{ url("contacts/create")}}" class="btn btn-success mb-1">Add New Data</a>
+
+<div class="row">
+    <form action="{{ url("/") }}" class="form-inline" method="GET">
+       <div class="form-group mx-sm-3 mb-2">
+            <input value="{{ Request::get("keyword") }}" name="keyword" type="text" class="form-control" placeholder="by name...">
         </div>
+        <button type="submit" class="btn btn-primary mb-2">Search</button>
+    </form>
+</div>
+
+@if(session()->get('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('success') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <!-- <th>id</th> -->
+                    <th>nama</th>
+                    <th>email</th>
+                    <th>phone</th>
+                    <th>address</th>
+                    <th colspan="2">action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($contacts as $contact)
+                <tr>
+                    <!-- <td>{{$contact->id}}</td> -->
+                    <td>{{$contact->nama}}</td>
+                    <td>{{$contact->phone}}</td>
+                    <td>{{$contact->email}}</td>
+                    <td>{{$contact->address}}</td>
+                    <td><a class="btn btn-primary" href="{{ url("contacts/{$contact->id}/edit") }}">Edit</td>
+                    <td>
+                        <form action="{{ url("contacts/{$contact->id}") }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
+</div>
 @endsection
